@@ -55,16 +55,16 @@ public class PersonResourceTest extends JerseyTest {
 	}
 	
 	@Test
-    public void testGetPerson() {
-        Person response = target("persons").path(person1_id).request().get(Person.class);
-        assertNotNull(response);
-    }
+    	public void testGetPerson() {
+		Person response = target("persons").path(person1_id).request().get(Person.class);
+        	assertNotNull(response);
+    	}
 	
 	@Test
-    public void testGetPersons() {
-        Collection <Person> response = target("persons").request().get(new GenericType<Collection<Person>>(){});
-        assertEquals(2, response.size());
-    }
+    	public void testGetPersons() {
+        	Collection <Person> response = target("persons").request().get(new GenericType<Collection<Person>>(){});
+        	assertEquals(2, response.size());
+    	}
 	
 	/*@Test
 	public void testDao() {
