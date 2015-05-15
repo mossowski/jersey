@@ -39,8 +39,29 @@ public class PersonDao {
 		return persons.values();
 	}
 	
+	public ListenableFuture<Collection<Person>> getPersonsAsync() {
+		ListenableFuture<Collection<Person>> future = 
+				service.submit(new Callable<Collection<Person>>() {
+					public Collection<Person> call() throws Exception {
+						return getPersons();
+					}
+				});
+		return future;
+	}
+	
+	
 	public Person getPerson(String id) {
 		return persons.get(id);
+	}
+	
+	public ListenableFuture<Person> getPersonAsync(final String id) {
+		ListenableFuture<Person> future = 
+				service.submit(new Callable<Person>() {
+					public Person call() throws Exception {
+						return getPerson(id);
+					}
+				});
+		return future;
 	}
 	
 	public Person addPerson(Person person) {

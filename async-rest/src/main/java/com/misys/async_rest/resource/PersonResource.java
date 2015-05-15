@@ -30,15 +30,35 @@ public class PersonResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Collection<Person> getPersons() {
-		return dao.getPersons();
+	@ManagedAsync
+	public void getPersons(@Suspended final AsyncResponse response) {
+		//response.resume(dao.getPersons());
+		ListenableFuture<Collection<Person>> personsFuture = dao.getPersonsAsync();
+		Futures.addCallback(personsFuture, new FutureCallback<Collection<Person>>() {
+			public void onSuccess(Collection<Person> persons) {
+				response.resume(persons);
+			}
+			public void onFailure(Throwable thrown) {
+				response.resume(thrown);
+			}
+		});
 	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@ManagedAsync
 	@Path("/{id}")
-	public Person getPerson(@PathParam("id") String id) {
-		return dao.getPerson(id);
+	public void getPerson(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+		//response.resume(dao.getPerson(id));
+		ListenableFuture<Person> personFuture = dao.getPersonAsync(id);
+		Futures.addCallback(personFuture, new FutureCallback<Person>() {
+			public void onSuccess(Person person) {
+				response.resume(person);
+			}
+			public void onFailure(Throwable thrown) {
+				response.resume(thrown);
+			}
+		});
 	}
 	
 	@POST
@@ -55,7 +75,6 @@ public class PersonResource {
 			public void onFailure(Throwable thrown) {
 				response.resume(thrown);
 			}
-			
 		});
 	}
 	
