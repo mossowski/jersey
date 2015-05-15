@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
@@ -31,11 +32,24 @@ public class PersonResourceTest extends JerseyTest {
 		return new PersonApplication(dao);
 	}
 	
-	protected Response addPerson(String name) {
-		Person person = new Person();
-		person.setName(name);
-		Entity<Person> personEntity = Entity.entity(person, MediaType.APPLICATION_JSON_TYPE);
+	protected Response addPerson(String name, String...extras) {
+		
+		HashMap<String, Object> person = new HashMap<String, Object>();
+		person.put("name", name);
+		if (extras != null) {
+			int count = 1;
+			for (String a : extras) {
+				System.out.println(count + " " + person);
+				person.put("extra" + count++, a);
+				
+			}
+		}
+		Entity<HashMap<String, Object>> personEntity = Entity.entity(person, MediaType.APPLICATION_JSON_TYPE);
 		return target("persons").request().post(personEntity);
+	}
+	
+	protected HashMap<String, Object> toHashMap(Response response) {
+		return response.readEntity(new GenericType<HashMap<String, Object>>() {});
 	}
 	
 	@Before
@@ -72,5 +86,16 @@ public class PersonResourceTest extends JerseyTest {
 		Person response2 = target("persons").path("1").request().get(Person.class);
 		assertEquals(response1.getName(), response2.getName());
 	}*/
+	
+	@Test
+	public void testAddExtraField() {
+		Response response = addPerson("name", "yolo");
+		assertEquals(200, response.getStatus());
+		
+		HashMap<String, Object> person = response.readEntity(new GenericType<HashMap<String, Object>>() {});
+		//HashMap<String, Object> person = toHashMap(response);
+		assertNotNull(person.get("id"));
+		assertEquals(person.get("extra1"), "yolo");
+	}
 	
 }
