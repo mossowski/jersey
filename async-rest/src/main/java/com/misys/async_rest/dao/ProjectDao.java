@@ -41,6 +41,7 @@ public class ProjectDao {
 	public ListenableFuture<Project> addProjectAsync(final Project project) {
 		ListenableFuture<Project> future = 
 				service.submit(new Callable<Project>() {
+					@Override
 					public Project call() throws Exception {
 						return addProject(project);
 					}

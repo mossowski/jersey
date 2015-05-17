@@ -5,6 +5,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.misys.async_rest.application.PersonApplication;
+import com.misys.async_rest.dao.Database;
 import com.misys.async_rest.dao.PersonDao;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class Main {
     public static HttpServer startServer() {
     	
     	final PersonDao dao = new PersonDao();
+    	final Database db = new Database();
         // create a resource config that scans for JAX-RS resources and providers
         // in com.misys.async_rest package
         final ResourceConfig rc = new PersonApplication(dao);

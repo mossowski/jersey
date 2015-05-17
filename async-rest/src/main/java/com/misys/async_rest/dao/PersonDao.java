@@ -18,18 +18,6 @@ public class PersonDao {
 	private ListeningExecutorService service;
 	
 	public PersonDao() {
-		/*persons = new HashMap<String, Person>();
-		Person p1 = new Person();
-		p1.setId("1");
-		p1.setName("Mietek");
-		
-		Person p2 = new Person();
-		p2.setId("2");
-		p2.setName("Wiesiek");
-		
-		persons.put(p1.getId(), p1);
-		persons.put(p2.getId(), p2);*/
-		
 		persons = new ConcurrentHashMap<String, Person>();
 		service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
 		
@@ -42,6 +30,7 @@ public class PersonDao {
 	public ListenableFuture<Collection<Person>> getPersonsAsync() {
 		ListenableFuture<Collection<Person>> future = 
 				service.submit(new Callable<Collection<Person>>() {
+					@Override
 					public Collection<Person> call() throws Exception {
 						return getPersons();
 					}
@@ -57,6 +46,7 @@ public class PersonDao {
 	public ListenableFuture<Person> getPersonAsync(final String id) {
 		ListenableFuture<Person> future = 
 				service.submit(new Callable<Person>() {
+					@Override
 					public Person call() throws Exception {
 						return getPerson(id);
 					}
@@ -74,6 +64,7 @@ public class PersonDao {
 	public ListenableFuture<Person> addPersonAsync(final Person person) {
 		ListenableFuture<Person> future = 
 				service.submit(new Callable<Person>() {
+					@Override
 					public Person call() throws Exception {
 						return addPerson(person);
 					}
