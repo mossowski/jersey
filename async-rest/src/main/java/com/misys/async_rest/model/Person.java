@@ -2,20 +2,20 @@ package com.misys.async_rest.model;
 
 import java.util.HashMap;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@XmlRootElement
 @JsonPropertyOrder(("id"))
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Person {
 
 	private String id;
+	@NotNull(message="name is required field")
 	private String name;
 	
 	private HashMap<String, Object> extras = new HashMap<String, Object>();

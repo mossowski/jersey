@@ -1,8 +1,5 @@
 package com.misys.async_rest.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class Project {
 
 	private String id;

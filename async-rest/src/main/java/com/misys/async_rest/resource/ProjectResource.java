@@ -47,9 +47,11 @@ public class ProjectResource {
 	public void addProject(Project project, @Suspended final AsyncResponse response) {
 		ListenableFuture<Project> projectFuture = dao.addProjectAsync(project);
 		Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+			@Override
 			public void onSuccess(Project addedProject) {
 				response.resume(addedProject);
 			}
+			@Override
 			public void onFailure(Throwable thrown) {
 				response.resume(thrown);
 			}
