@@ -23,6 +23,8 @@ public class Database {
 			document.put("name", "Wiesiek");
 			tableCollection.insertOne(document);
 			
+			mongo.close();
+			
 		} catch(MongoException e) {
 			e.printStackTrace();
 		}
