@@ -16,7 +16,7 @@ public class Database {
 			MongoClient mongo = new MongoClient("localhost", 27017);
 			MongoDatabase db = mongo.getDatabase("marcin");
 	
-			MongoCollection<Document> tableCollection = db.getCollection("person");
+			MongoCollection<Document> tableCollection = db.getCollection("persons");
 			
 			Document document = new Document();
 			document.put("id", "1");

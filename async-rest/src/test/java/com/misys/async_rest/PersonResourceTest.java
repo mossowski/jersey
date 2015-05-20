@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.misys.async_rest.application.PersonApplication;
+import com.misys.async_rest.application.ApplicationConfig;
 import com.misys.async_rest.dao.PersonDao;
 
 public class PersonResourceTest extends JerseyTest {
@@ -33,7 +33,7 @@ public class PersonResourceTest extends JerseyTest {
 		//enable(TestProperties.LOG_TRAFFIC);
 		//enable(TestProperties.DUMP_ENTITY);
 		final PersonDao dao = new PersonDao();
-		return new PersonApplication(dao);
+		return new ApplicationConfig(dao);
 	}
 	
 	@Override
