@@ -22,39 +22,42 @@ import javax.ws.rs.ext.RuntimeDelegate;
  *
  */
 public class Main {
-    
-	public static final String WEB_ROOT = "/webroot/";
+
+    public static final String WEB_ROOT = "/webroot/";
     public static final String APP_PATH = "/async-rest/";
     public static final int PORT = 8080;
-    
-    //---------------------------------------------------------------------------------------------------
+
+    // ---------------------------------------------------------------------------------------------------
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
+     * 
      * @return Grizzly HTTP server.
      */
     public static HttpServer startServer() {
-    	
-    	// Data Access Objects
-    	final PersonDao personDao = new PersonDao();
-    	//final Database db = new Database();
-    	
-    	final ResourceConfig rc = new ApplicationConfig(personDao);
-    	rc.registerClasses(MainResource.class);
-    	
-    	final HttpServer server = new HttpServer();
+
+        // Data Access Objects
+        final PersonDao personDao = new PersonDao();
+        // final Database db = new Database();
+
+        final ResourceConfig rc = new ApplicationConfig(personDao);
+        rc.registerClasses(MainResource.class);
+
+        final HttpServer server = new HttpServer();
         final NetworkListener listener = new NetworkListener("grizzly", "localhost", PORT);
 
         server.addListener(listener);
-        
+
         final ServerConfiguration config = server.getServerConfiguration();
-        
+
         // add handler for serving static content
-        config.addHttpHandler(new CLStaticHttpHandler(Main.class.getClassLoader(), WEB_ROOT), APP_PATH);
+        config.addHttpHandler(new CLStaticHttpHandler(Main.class.getClassLoader(), WEB_ROOT),
+                APP_PATH);
 
         // add handler for serving JAX-RS resources
-        config.addHttpHandler(RuntimeDelegate.getInstance().
-        		createEndpoint(rc, GrizzlyHttpContainer.class), APP_PATH);
+        config.addHttpHandler(
+                RuntimeDelegate.getInstance().createEndpoint(rc, GrizzlyHttpContainer.class),
+                APP_PATH);
 
         try {
             server.start();
@@ -64,34 +67,32 @@ public class Main {
 
         return server;
     }
-    
-    //---------------------------------------------------------------------------------------------------
-    
-    /*public static ResourceConfig createResourceConfig() {
-        return new ResourceConfig().registerClasses(MainResource.class);
-    }*/
-    
-    //---------------------------------------------------------------------------------------------------
-    
+
+    // ---------------------------------------------------------------------------------------------------
+
+    /*
+     * public static ResourceConfig createResourceConfig() { return new
+     * ResourceConfig().registerClasses(MainResource.class); }
+     */
+
+    // ---------------------------------------------------------------------------------------------------
+
     public static String getAppUri() {
         return String.format("http://localhost:%s%s", PORT, APP_PATH);
     }
-    
-    //---------------------------------------------------------------------------------------------------
+
+    // ---------------------------------------------------------------------------------------------------
 
     /**
      * Main method.
      */
     public static void main(String[] args) throws IOException {
-        
-    	final HttpServer server = startServer();
-    	System.out.println(String.format("Application started.\n"
-    			+ "Access it at %s\n"
-    			+ "Hit enter to stop it...",
-    			getAppUri()));
-    	System.in.read();
-    	server.shutdownNow();
+
+        final HttpServer server = startServer();
+        System.out.println(String.format("Application started.\n" + "Access it at %s\n"
+                + "Hit enter to stop it...", getAppUri()));
+        System.in.read();
+        server.shutdownNow();
     }
 
 }
-

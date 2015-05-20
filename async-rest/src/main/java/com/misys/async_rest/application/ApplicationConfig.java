@@ -10,27 +10,26 @@ import com.misys.async_rest.dao.PersonDao;
 
 public class ApplicationConfig extends ResourceConfig {
 
-	public ApplicationConfig(final PersonDao dao) {
-		
-		JacksonJsonProvider json = new JacksonJsonProvider().
-				configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).
-				configure(SerializationFeature.INDENT_OUTPUT, true);
-		
-		//JacksonXMLProvider xml = new JacksonXMLProvider().
-		//		configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).
-		//		configure(SerializationFeature.INDENT_OUTPUT, true);
-		
-		packages("com.misys").
-				register(new AbstractBinder() {
-					@Override
-					protected void configure() {
-						bind(dao).to(PersonDao.class);		
-					}
-				});
+    public ApplicationConfig(final PersonDao dao) {
 
-		register(json);
-		//register(xml);
-		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
-	}
+        JacksonJsonProvider json = new JacksonJsonProvider().configure(
+                SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).configure(
+                SerializationFeature.INDENT_OUTPUT, true);
+
+        // JacksonXMLProvider xml = new JacksonXMLProvider().
+        // configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).
+        // configure(SerializationFeature.INDENT_OUTPUT, true);
+
+        packages("com.misys").register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bind(dao).to(PersonDao.class);
+            }
+        });
+
+        register(json);
+        // register(xml);
+        property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+    }
 
 }

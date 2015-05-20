@@ -23,69 +23,75 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.misys.async_rest.dao.PersonDao;
 import com.misys.async_rest.model.Person;
 
-
 @Path("/persons")
 public class PersonResource {
 
-	@Context PersonDao dao;
-	//PersonDao dao = new PersonDao();
-	
-	@GET
-	//@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Produces(MediaType.APPLICATION_JSON)
-	@ManagedAsync
-	public void getPersons(@Suspended final AsyncResponse response) {
-		//response.resume(dao.getPersons());
-		ListenableFuture<Collection<Person>> personsFuture = dao.getPersonsAsync();
-		Futures.addCallback(personsFuture, new FutureCallback<Collection<Person>>() {
-			@Override
-			public void onSuccess(Collection<Person> persons) {
-				response.resume(persons);
-			}
-			@Override
-			public void onFailure(Throwable thrown) {
-				response.resume(thrown);
-			}
-		});
-	}
-	
-	@GET
-	//@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Produces(MediaType.APPLICATION_JSON)
-	@ManagedAsync
-	@Path("/{id}")
-	public void getPerson(@PathParam("id") String id, @Suspended final AsyncResponse response) {
-		//response.resume(dao.getPerson(id));
-		ListenableFuture<Person> personFuture = dao.getPersonAsync(id);
-		Futures.addCallback(personFuture, new FutureCallback<Person>() {
-			@Override
-			public void onSuccess(Person person) {
-				response.resume(person);
-			}
-			@Override
-			public void onFailure(Throwable thrown) {
-				response.resume(thrown);
-			}
-		});
-	}
-	
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@ManagedAsync
-	public void addPerson(@Valid @NotNull Person person, @Suspended final AsyncResponse response) {
-		//response.resume(dao.addPerson(person));
-		ListenableFuture<Person> personFuture = dao.addPersonAsync(person);
-		Futures.addCallback(personFuture, new FutureCallback<Person>() {
-			@Override
-			public void onSuccess(Person addedPerson) {
-				response.resume(addedPerson);
-			}
-			@Override
-			public void onFailure(Throwable thrown) {
-				response.resume(thrown);
-			}
-		});
-	}
-	
+    @Context
+    PersonDao dao;
+
+    // ---------------------------------------------------------------------------------------------------
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ManagedAsync
+    public void getPersons(@Suspended final AsyncResponse response) {
+
+        ListenableFuture<Collection<Person>> personsFuture = dao.getPersonsAsync();
+        Futures.addCallback(personsFuture, new FutureCallback<Collection<Person>>() {
+            @Override
+            public void onSuccess(Collection<Person> persons) {
+                response.resume(persons);
+            }
+
+            @Override
+            public void onFailure(Throwable thrown) {
+                response.resume(thrown);
+            }
+        });
+    }
+
+    // ---------------------------------------------------------------------------------------------------
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ManagedAsync
+    @Path("/{id}")
+    public void getPerson(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+
+        ListenableFuture<Person> personFuture = dao.getPersonAsync(id);
+        Futures.addCallback(personFuture, new FutureCallback<Person>() {
+            @Override
+            public void onSuccess(Person person) {
+                response.resume(person);
+            }
+
+            @Override
+            public void onFailure(Throwable thrown) {
+                response.resume(thrown);
+            }
+        });
+    }
+
+    // ---------------------------------------------------------------------------------------------------
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ManagedAsync
+    public void addPerson(@Valid @NotNull Person person, @Suspended final AsyncResponse response) {
+
+        ListenableFuture<Person> personFuture = dao.addPersonAsync(person);
+        Futures.addCallback(personFuture, new FutureCallback<Person>() {
+            @Override
+            public void onSuccess(Person addedPerson) {
+                response.resume(addedPerson);
+            }
+
+            @Override
+            public void onFailure(Throwable thrown) {
+                response.resume(thrown);
+            }
+        });
+    }
+
 }
