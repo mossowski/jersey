@@ -2,6 +2,8 @@ package com.misys.async_rest.resource;
 
 import java.util.Collection;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -76,7 +78,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ManagedAsync
-    public void addProject(Project project, @Suspended final AsyncResponse response) {
+    public void addProject(@Valid @NotNull Project project, @Suspended final AsyncResponse response) {
 
         ListenableFuture<Project> projectFuture = dao.addProjectAsync(project);
         Futures.addCallback(projectFuture, new FutureCallback<Project>() {

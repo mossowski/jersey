@@ -7,10 +7,11 @@ import org.glassfish.jersey.server.ServerProperties;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.misys.async_rest.dao.PersonDao;
+import com.misys.async_rest.dao.ProjectDao;
 
 public class ApplicationConfig extends ResourceConfig {
 
-    public ApplicationConfig(final PersonDao dao) {
+    public ApplicationConfig(final PersonDao personDao, final ProjectDao projectDao) {
 
         JacksonJsonProvider json = new JacksonJsonProvider().configure(
                 SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).configure(
@@ -23,7 +24,8 @@ public class ApplicationConfig extends ResourceConfig {
         packages("com.misys").register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bind(dao).to(PersonDao.class);
+                bind(personDao).to(PersonDao.class);
+                bind(projectDao).to(ProjectDao.class);
             }
         });
 

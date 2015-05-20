@@ -8,9 +8,8 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.misys.async_rest.application.ApplicationConfig;
-import com.misys.async_rest.dao.Database;
 import com.misys.async_rest.dao.PersonDao;
-import com.misys.async_rest.resource.MainResource;
+import com.misys.async_rest.dao.ProjectDao;
 
 import java.io.IOException;
 
@@ -38,10 +37,11 @@ public class Main {
 
         // Data Access Objects
         final PersonDao personDao = new PersonDao();
+        final ProjectDao projectDao = new ProjectDao();
         // final Database db = new Database();
 
-        final ResourceConfig rc = new ApplicationConfig(personDao);
-        rc.registerClasses(MainResource.class);
+        final ResourceConfig rc = new ApplicationConfig(personDao, projectDao);
+        //rc.registerClasses(MainResource.class);
 
         final HttpServer server = new HttpServer();
         final NetworkListener listener = new NetworkListener("grizzly", "localhost", PORT);

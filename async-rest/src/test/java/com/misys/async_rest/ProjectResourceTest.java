@@ -24,10 +24,10 @@ import com.misys.async_rest.application.ApplicationConfig;
 import com.misys.async_rest.dao.PersonDao;
 import com.misys.async_rest.dao.ProjectDao;
 
-public class PersonResourceTest extends JerseyTest {
+public class ProjectResourceTest extends JerseyTest {
 
-    private String person1_id;
-    private String person2_id;
+    private String project1_id;
+    private String project2_id;
 
     @Override
     protected Application configure() {
@@ -47,21 +47,21 @@ public class PersonResourceTest extends JerseyTest {
         clientConfig.register(jsonProvider);
     }
 
-    protected Response addPerson(String name, String... extras) {
+    protected Response addProject(String name, String... extras) {
 
-        HashMap<String, Object> person = new HashMap<String, Object>();
-        person.put("name", name);
+        HashMap<String, Object> project = new HashMap<String, Object>();
+        project.put("name", name);
 
         if (extras != null) {
             int count = 1;
             for (String a : extras) {
-                person.put("extra" + count++, a);
+                project.put("extra" + count++, a);
             }
         }
 
-        Entity<HashMap<String, Object>> personEntity = Entity.entity(person,
+        Entity<HashMap<String, Object>> projectEntity = Entity.entity(project,
                 MediaType.APPLICATION_JSON_TYPE);
-        return target("persons").request().post(personEntity);
+        return target("projects").request().post(projectEntity);
     }
 
     protected HashMap<String, Object> toHashMap(Response response) {
@@ -69,43 +69,43 @@ public class PersonResourceTest extends JerseyTest {
     }
 
     @Before
-    public void setupPersons() {
+    public void setupProjects() {
 
-        person1_id = (String) toHashMap(addPerson("Mietek")).get("id");
-        person2_id = (String) toHashMap(addPerson("Wiesiek")).get("id");
+        project1_id = (String) toHashMap(addProject("Project 1")).get("id");
+        project2_id = (String) toHashMap(addProject("Project 2")).get("id");
     }
 
     @Test
-    public void testAddPerson() {
+    public void testAddProject() {
 
-        Response response = addPerson("Bolek");
+        Response response = addProject("Project 4");
         assertEquals(200, response.getStatus());
 
-        HashMap<String, Object> responsePerson = toHashMap(response);
-        assertNotNull(responsePerson.get("id"));
-        assertEquals("Bolek", responsePerson.get("name"));
+        HashMap<String, Object> responseProject = toHashMap(response);
+        assertNotNull(responseProject.get("id"));
+        assertEquals("Project 4", responseProject.get("name"));
     }
 
     @Test
-    public void testGetPersonOne() {
+    public void testGetProjectOne() {
 
-        HashMap<String, Object> response = toHashMap(target("persons").path(person1_id).request()
-                .get());
-        assertNotNull(response);
-    }
-    
-    @Test
-    public void testGetPersonTwo() {
-
-        HashMap<String, Object> response = toHashMap(target("persons").path(person2_id).request()
+        HashMap<String, Object> response = toHashMap(target("projects").path(project1_id).request()
                 .get());
         assertNotNull(response);
     }
 
     @Test
-    public void testGetPersons() {
+    public void testGetProjectTwo() {
 
-        Collection<HashMap<String, Object>> response = target("persons").request().get(
+        HashMap<String, Object> response = toHashMap(target("projects").path(project2_id).request()
+                .get());
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testGetProjects() {
+
+        Collection<HashMap<String, Object>> response = target("projects").request().get(
                 new GenericType<Collection<HashMap<String, Object>>>() {});
         assertEquals(2, response.size());
     }
@@ -113,17 +113,17 @@ public class PersonResourceTest extends JerseyTest {
     @Test
     public void testAddExtraField() {
 
-        Response response = addPerson("name", "yolo");
+        Response response = addProject("name", "yolo");
         assertEquals(200, response.getStatus());
-        HashMap<String, Object> person = toHashMap(response);
-        assertNotNull(person.get("id"));
+        HashMap<String, Object> project = toHashMap(response);
+        assertNotNull(project.get("id"));
         // assertEquals(person.get("extra1"), "yolo");
     }
 
     @Test
-    public void addPersonNoName() {
+    public void addProjectNoName() {
 
-        Response response = addPerson(null);
+        Response response = addProject(null);
         assertEquals(400, response.getStatus());
         String message = response.readEntity(String.class);
         assertTrue(message.contains("name is required field"));
