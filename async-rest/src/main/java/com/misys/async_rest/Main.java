@@ -8,6 +8,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.misys.async_rest.application.ApplicationConfig;
+import com.misys.async_rest.dao.Database;
 import com.misys.async_rest.dao.PersonDao;
 import com.misys.async_rest.dao.ProjectDao;
 
@@ -38,8 +39,7 @@ public class Main {
         // Data Access Objects
         final PersonDao personDao = new PersonDao();
         final ProjectDao projectDao = new ProjectDao();
-        // final Database db = new Database();
-
+        
         final ResourceConfig rc = new ApplicationConfig(personDao, projectDao);
         //rc.registerClasses(MainResource.class);
 
@@ -88,10 +88,13 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
 
+        final Database database = new Database();
         final HttpServer server = startServer();
+        
         System.out.println(String.format("Application started.\n" + "Access it at %s\n"
                 + "Hit enter to stop it...", getAppUri()));
         System.in.read();
+        database.closeConnection();
         server.shutdownNow();
     }
 

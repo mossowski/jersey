@@ -8,25 +8,30 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 public class Database {
+    
+    public static final String IP = "localhost";
+    public static final int PORT = 27017;
+    public static MongoClient mongoClient;
+    public static MongoDatabase mongoDatabase;
+    public static MongoCollection<Document> persons;
 
     public Database() {
 
         try {
 
-            MongoClient mongo = new MongoClient("localhost", 27017);
-            MongoDatabase db = mongo.getDatabase("marcin");
-            MongoCollection<Document> tableCollection = db.getCollection("persons");
+            mongoClient = new MongoClient(IP, PORT);
+            mongoDatabase = mongoClient.getDatabase("marcin");
+            persons = mongoDatabase.getCollection("persons");
 
-            Document document = new Document();
-            document.put("id", "1");
-            document.put("name", "Wiesiek");
-            tableCollection.insertOne(document);
-
-            mongo.close();
-
+            // System.out.println("Added " + persons.count() + " to database!");
+            
         } catch (MongoException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void closeConnection() {
+        mongoClient.close();
     }
 
 }
