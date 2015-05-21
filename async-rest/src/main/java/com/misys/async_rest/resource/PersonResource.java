@@ -5,8 +5,10 @@ import java.util.Collection;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -23,6 +25,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.misys.async_rest.dao.PersonDao;
 import com.misys.async_rest.model.Person;
 
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 @Path("/persons")
 public class PersonResource {
 
@@ -32,7 +36,6 @@ public class PersonResource {
     // ---------------------------------------------------------------------------------------------------
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @ManagedAsync
     public void getPersons(@Suspended final AsyncResponse response) {
 
@@ -53,7 +56,6 @@ public class PersonResource {
     // ---------------------------------------------------------------------------------------------------
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @ManagedAsync
     @Path("/{id}")
     public void getPerson(@PathParam("id") String id, @Suspended final AsyncResponse response) {
@@ -75,8 +77,6 @@ public class PersonResource {
     // ---------------------------------------------------------------------------------------------------
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @ManagedAsync
     public void addPerson(@Valid @NotNull Person person, @Suspended final AsyncResponse response) {
 
@@ -85,6 +85,49 @@ public class PersonResource {
             @Override
             public void onSuccess(Person addedPerson) {
                 response.resume(addedPerson);
+            }
+
+            @Override
+            public void onFailure(Throwable thrown) {
+                response.resume(thrown);
+            }
+        });
+    }
+    
+    // ---------------------------------------------------------------------------------------------------
+
+    @PUT
+    @ManagedAsync
+    @Path("/{id}")
+    public void updatePerson(@PathParam("id") String id, @Valid @NotNull Person personToUpdate, @Suspended final AsyncResponse response) {
+
+        personToUpdate.setId(id);
+        ListenableFuture<Person> personFuture = dao.updatePersonAsync(personToUpdate);
+        Futures.addCallback(personFuture, new FutureCallback<Person>() {
+            @Override
+            public void onSuccess(Person person) {
+                response.resume(person);
+            }
+
+            @Override
+            public void onFailure(Throwable thrown) {
+                response.resume(thrown);
+            }
+        });
+    }
+    
+    // ---------------------------------------------------------------------------------------------------
+
+    @DELETE
+    @ManagedAsync
+    @Path("/{id}")
+    public void deletePerson(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+
+        ListenableFuture<Person> personFuture = dao.deletePersonAsync(id);
+        Futures.addCallback(personFuture, new FutureCallback<Person>() {
+            @Override
+            public void onSuccess(Person person) {
+                response.resume(person);
             }
 
             @Override
