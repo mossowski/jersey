@@ -157,7 +157,7 @@ public class PersonDao {
 
     /**
      * 
-     * @param id
+     * @param person
      * @return
      */
     public Person updatePerson(Person person) {
@@ -184,7 +184,7 @@ public class PersonDao {
 
     /**
      * 
-     * @param id
+     * @param person
      * @return
      */
     public ListenableFuture<Person> updatePersonAsync(final Person person) {
@@ -204,7 +204,6 @@ public class PersonDao {
     /**
      * 
      * @param id
-     * @return 
      * @return
      */
     public Person deletePerson(String id) {

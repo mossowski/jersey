@@ -35,6 +35,10 @@ public class PersonResource {
 
     // ---------------------------------------------------------------------------------------------------
 
+    /**
+     * 
+     * @param response
+     */
     @GET
     @ManagedAsync
     public void getPersons(@Suspended final AsyncResponse response) {
@@ -55,6 +59,11 @@ public class PersonResource {
 
     // ---------------------------------------------------------------------------------------------------
 
+    /**
+     * 
+     * @param id
+     * @param response
+     */
     @GET
     @ManagedAsync
     @Path("/{id}")
@@ -76,6 +85,11 @@ public class PersonResource {
 
     // ---------------------------------------------------------------------------------------------------
 
+    /**
+     * 
+     * @param person
+     * @param response
+     */
     @POST
     @ManagedAsync
     public void addPerson(@Valid @NotNull Person person, @Suspended final AsyncResponse response) {
@@ -96,6 +110,12 @@ public class PersonResource {
     
     // ---------------------------------------------------------------------------------------------------
 
+    /**
+     * 
+     * @param id
+     * @param personToUpdate
+     * @param response
+     */
     @PUT
     @ManagedAsync
     @Path("/{id}")
@@ -118,6 +138,11 @@ public class PersonResource {
     
     // ---------------------------------------------------------------------------------------------------
 
+    /**
+     * 
+     * @param id
+     * @param response
+     */
     @DELETE
     @ManagedAsync
     @Path("/{id}")
