@@ -13,17 +13,20 @@ public class ApplicationConfig extends ResourceConfig {
 
     public ApplicationConfig(final PersonDao personDao, final ProjectDao projectDao) {
 
-        JacksonJsonProvider json = new JacksonJsonProvider().configure(
-                SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).configure(
-                SerializationFeature.INDENT_OUTPUT, true);
+        JacksonJsonProvider json = new JacksonJsonProvider()
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+            .configure(SerializationFeature.INDENT_OUTPUT, true);
 
         // JacksonXMLProvider xml = new JacksonXMLProvider().
         // configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).
         // configure(SerializationFeature.INDENT_OUTPUT, true);
 
         packages("com.misys").register(new AbstractBinder() {
+
             @Override
             protected void configure() {
+
+                // Binding dao
                 bind(personDao).to(PersonDao.class);
                 bind(projectDao).to(ProjectDao.class);
             }
