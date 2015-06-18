@@ -22,16 +22,16 @@ import org.glassfish.jersey.server.ManagedAsync;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.misys.async_rest.dao.ProjectDao;
-import com.misys.async_rest.model.Project;
+import com.misys.async_rest.dao.CommitDao;
+import com.misys.async_rest.model.Commit;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/projects")
-public class ProjectResource {
+@Path("/commits")
+public class CommitResource {
 
     @Context
-    ProjectDao dao;
+    CommitDao dao;
 
     // ---------------------------------------------------------------------------------------------------
 
@@ -41,13 +41,13 @@ public class ProjectResource {
      */
     @GET
     @ManagedAsync
-    public void getProjects(@Suspended final AsyncResponse response) {
+    public void getCommits(@Suspended final AsyncResponse response) {
 
-        ListenableFuture<Collection<Project>> projectsFuture = this.dao.getProjectsAsync();
-        Futures.addCallback(projectsFuture, new FutureCallback<Collection<Project>>() {
+        ListenableFuture<Collection<Commit>> commitsFuture = this.dao.getCommitsAsync();
+        Futures.addCallback(commitsFuture, new FutureCallback<Collection<Commit>>() {
             @Override
-            public void onSuccess(Collection<Project> projects) {
-                response.resume(projects);
+            public void onSuccess(Collection<Commit> commits) {
+                response.resume(commits);
             }
 
             @Override
@@ -67,13 +67,13 @@ public class ProjectResource {
     @GET
     @ManagedAsync
     @Path("/{id}")
-    public void getProject(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+    public void getCommit(@PathParam("id") String id, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.getProjectAsync(id);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Commit> commitFuture = this.dao.getCommitAsync(id);
+        Futures.addCallback(commitFuture, new FutureCallback<Commit>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Commit commit) {
+                response.resume(commit);
             }
 
             @Override
@@ -87,18 +87,18 @@ public class ProjectResource {
 
     /**
      * 
-     * @param project
+     * @param commit
      * @param response
      */
     @POST
     @ManagedAsync
-    public void addProject(@Valid @NotNull Project project, @Suspended final AsyncResponse response) {
+    public void addCommit(@Valid @NotNull Commit commit, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.addProjectAsync(project);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Commit> commitFuture = this.dao.addCommitAsync(commit);
+        Futures.addCallback(commitFuture, new FutureCallback<Commit>() {
             @Override
-            public void onSuccess(Project addedProject) {
-                response.resume(addedProject);
+            public void onSuccess(Commit addedCommit) {
+                response.resume(addedCommit);
             }
 
             @Override
@@ -113,20 +113,20 @@ public class ProjectResource {
     /**
      * 
      * @param id
-     * @param projectToUpdate
+     * @param commitToUpdate
      * @param response
      */
     @PUT
     @ManagedAsync
     @Path("/{id}")
-    public void updateProject(@PathParam("id") String id, @Valid @NotNull Project projectToUpdate, @Suspended final AsyncResponse response) {
+    public void updateCommit(@PathParam("id") String id, @Valid @NotNull Commit commitToUpdate, @Suspended final AsyncResponse response) {
 
-        projectToUpdate.setId(id);
-        ListenableFuture<Project> projectFuture = this.dao.updateProjectAsync(projectToUpdate);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        commitToUpdate.setId(id);
+        ListenableFuture<Commit> commitFuture = this.dao.updateCommitAsync(commitToUpdate);
+        Futures.addCallback(commitFuture, new FutureCallback<Commit>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Commit commit) {
+                response.resume(commit);
             }
 
             @Override
@@ -146,13 +146,13 @@ public class ProjectResource {
     @DELETE
     @ManagedAsync
     @Path("/{id}")
-    public void deleteProject(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+    public void deleteCommit(@PathParam("id") String id, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.deleteProjectAsync(id);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Commit> commitFuture = this.dao.deleteCommitAsync(id);
+        Futures.addCallback(commitFuture, new FutureCallback<Commit>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Commit commit) {
+                response.resume(commit);
             }
 
             @Override

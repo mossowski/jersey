@@ -22,16 +22,16 @@ import org.glassfish.jersey.server.ManagedAsync;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.misys.async_rest.dao.ProjectDao;
-import com.misys.async_rest.model.Project;
+import com.misys.async_rest.dao.ProductDao;
+import com.misys.async_rest.model.Product;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/projects")
-public class ProjectResource {
+@Path("/products")
+public class ProductResource {
 
     @Context
-    ProjectDao dao;
+    ProductDao dao;
 
     // ---------------------------------------------------------------------------------------------------
 
@@ -41,13 +41,13 @@ public class ProjectResource {
      */
     @GET
     @ManagedAsync
-    public void getProjects(@Suspended final AsyncResponse response) {
+    public void getProducts(@Suspended final AsyncResponse response) {
 
-        ListenableFuture<Collection<Project>> projectsFuture = this.dao.getProjectsAsync();
-        Futures.addCallback(projectsFuture, new FutureCallback<Collection<Project>>() {
+        ListenableFuture<Collection<Product>> productsFuture = this.dao.getProductsAsync();
+        Futures.addCallback(productsFuture, new FutureCallback<Collection<Product>>() {
             @Override
-            public void onSuccess(Collection<Project> projects) {
-                response.resume(projects);
+            public void onSuccess(Collection<Product> products) {
+                response.resume(products);
             }
 
             @Override
@@ -67,13 +67,13 @@ public class ProjectResource {
     @GET
     @ManagedAsync
     @Path("/{id}")
-    public void getProject(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+    public void getProduct(@PathParam("id") String id, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.getProjectAsync(id);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Product> productFuture = this.dao.getProductAsync(id);
+        Futures.addCallback(productFuture, new FutureCallback<Product>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Product product) {
+                response.resume(product);
             }
 
             @Override
@@ -87,18 +87,18 @@ public class ProjectResource {
 
     /**
      * 
-     * @param project
+     * @param product
      * @param response
      */
     @POST
     @ManagedAsync
-    public void addProject(@Valid @NotNull Project project, @Suspended final AsyncResponse response) {
+    public void addProduct(@Valid @NotNull Product product, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.addProjectAsync(project);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Product> productFuture = this.dao.addProductAsync(product);
+        Futures.addCallback(productFuture, new FutureCallback<Product>() {
             @Override
-            public void onSuccess(Project addedProject) {
-                response.resume(addedProject);
+            public void onSuccess(Product addedProduct) {
+                response.resume(addedProduct);
             }
 
             @Override
@@ -113,20 +113,20 @@ public class ProjectResource {
     /**
      * 
      * @param id
-     * @param projectToUpdate
+     * @param productToUpdate
      * @param response
      */
     @PUT
     @ManagedAsync
     @Path("/{id}")
-    public void updateProject(@PathParam("id") String id, @Valid @NotNull Project projectToUpdate, @Suspended final AsyncResponse response) {
+    public void updateProduct(@PathParam("id") String id, @Valid @NotNull Product productToUpdate, @Suspended final AsyncResponse response) {
 
-        projectToUpdate.setId(id);
-        ListenableFuture<Project> projectFuture = this.dao.updateProjectAsync(projectToUpdate);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        productToUpdate.setId(id);
+        ListenableFuture<Product> productFuture = this.dao.updateProductAsync(productToUpdate);
+        Futures.addCallback(productFuture, new FutureCallback<Product>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Product product) {
+                response.resume(product);
             }
 
             @Override
@@ -146,13 +146,13 @@ public class ProjectResource {
     @DELETE
     @ManagedAsync
     @Path("/{id}")
-    public void deleteProject(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+    public void deleteProduct(@PathParam("id") String id, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.deleteProjectAsync(id);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Product> productFuture = this.dao.deleteProductAsync(id);
+        Futures.addCallback(productFuture, new FutureCallback<Product>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Product product) {
+                response.resume(product);
             }
 
             @Override

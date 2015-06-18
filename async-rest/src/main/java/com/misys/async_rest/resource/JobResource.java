@@ -22,16 +22,16 @@ import org.glassfish.jersey.server.ManagedAsync;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.misys.async_rest.dao.ProjectDao;
-import com.misys.async_rest.model.Project;
+import com.misys.async_rest.dao.JobDao;
+import com.misys.async_rest.model.Job;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/projects")
-public class ProjectResource {
+@Path("/jobs")
+public class JobResource {
 
     @Context
-    ProjectDao dao;
+    JobDao dao;
 
     // ---------------------------------------------------------------------------------------------------
 
@@ -41,13 +41,13 @@ public class ProjectResource {
      */
     @GET
     @ManagedAsync
-    public void getProjects(@Suspended final AsyncResponse response) {
+    public void getJobs(@Suspended final AsyncResponse response) {
 
-        ListenableFuture<Collection<Project>> projectsFuture = this.dao.getProjectsAsync();
-        Futures.addCallback(projectsFuture, new FutureCallback<Collection<Project>>() {
+        ListenableFuture<Collection<Job>> jobsFuture = this.dao.getJobsAsync();
+        Futures.addCallback(jobsFuture, new FutureCallback<Collection<Job>>() {
             @Override
-            public void onSuccess(Collection<Project> projects) {
-                response.resume(projects);
+            public void onSuccess(Collection<Job> jobs) {
+                response.resume(jobs);
             }
 
             @Override
@@ -67,13 +67,13 @@ public class ProjectResource {
     @GET
     @ManagedAsync
     @Path("/{id}")
-    public void getProject(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+    public void getJob(@PathParam("id") String id, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.getProjectAsync(id);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Job> jobFuture = this.dao.getJobAsync(id);
+        Futures.addCallback(jobFuture, new FutureCallback<Job>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Job job) {
+                response.resume(job);
             }
 
             @Override
@@ -87,18 +87,18 @@ public class ProjectResource {
 
     /**
      * 
-     * @param project
+     * @param job
      * @param response
      */
     @POST
     @ManagedAsync
-    public void addProject(@Valid @NotNull Project project, @Suspended final AsyncResponse response) {
+    public void addJob(@Valid @NotNull Job job, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.addProjectAsync(project);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Job> jobFuture = this.dao.addJobAsync(job);
+        Futures.addCallback(jobFuture, new FutureCallback<Job>() {
             @Override
-            public void onSuccess(Project addedProject) {
-                response.resume(addedProject);
+            public void onSuccess(Job addedJob) {
+                response.resume(addedJob);
             }
 
             @Override
@@ -113,20 +113,20 @@ public class ProjectResource {
     /**
      * 
      * @param id
-     * @param projectToUpdate
+     * @param jobToUpdate
      * @param response
      */
     @PUT
     @ManagedAsync
     @Path("/{id}")
-    public void updateProject(@PathParam("id") String id, @Valid @NotNull Project projectToUpdate, @Suspended final AsyncResponse response) {
+    public void updateJob(@PathParam("id") String id, @Valid @NotNull Job jobToUpdate, @Suspended final AsyncResponse response) {
 
-        projectToUpdate.setId(id);
-        ListenableFuture<Project> projectFuture = this.dao.updateProjectAsync(projectToUpdate);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        jobToUpdate.setId(id);
+        ListenableFuture<Job> jobFuture = this.dao.updateJobAsync(jobToUpdate);
+        Futures.addCallback(jobFuture, new FutureCallback<Job>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Job job) {
+                response.resume(job);
             }
 
             @Override
@@ -146,13 +146,13 @@ public class ProjectResource {
     @DELETE
     @ManagedAsync
     @Path("/{id}")
-    public void deleteProject(@PathParam("id") String id, @Suspended final AsyncResponse response) {
+    public void deleteJob(@PathParam("id") String id, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = this.dao.deleteProjectAsync(id);
-        Futures.addCallback(projectFuture, new FutureCallback<Project>() {
+        ListenableFuture<Job> jobFuture = this.dao.deleteJobAsync(id);
+        Futures.addCallback(jobFuture, new FutureCallback<Job>() {
             @Override
-            public void onSuccess(Project project) {
-                response.resume(project);
+            public void onSuccess(Job job) {
+                response.resume(job);
             }
 
             @Override
