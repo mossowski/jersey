@@ -21,7 +21,7 @@ public class Person {
     private HashMap<String, Object> extras = new HashMap<String, Object>();
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
@@ -29,7 +29,7 @@ public class Person {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -38,7 +38,7 @@ public class Person {
 
     @JsonAnyGetter
     public HashMap<String, Object> getExtras() {
-        return extras;
+        return this.extras;
     }
 
     @JsonAnyGetter

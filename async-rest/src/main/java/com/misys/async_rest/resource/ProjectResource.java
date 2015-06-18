@@ -36,7 +36,7 @@ public class ProjectResource {
     @ManagedAsync
     public void getProjects(@Suspended final AsyncResponse response) {
 
-        ListenableFuture<Collection<Project>> projectsFuture = dao.getProjectsAsync();
+        ListenableFuture<Collection<Project>> projectsFuture = this.dao.getProjectsAsync();
         Futures.addCallback(projectsFuture, new FutureCallback<Collection<Project>>() {
             @Override
             public void onSuccess(Collection<Project> projects) {
@@ -58,7 +58,7 @@ public class ProjectResource {
     @Path("/{id}")
     public void getProject(@PathParam("id") String id, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = dao.getProjectAsync(id);
+        ListenableFuture<Project> projectFuture = this.dao.getProjectAsync(id);
         Futures.addCallback(projectFuture, new FutureCallback<Project>() {
             @Override
             public void onSuccess(Project project) {
@@ -80,7 +80,7 @@ public class ProjectResource {
     @ManagedAsync
     public void addProject(@Valid @NotNull Project project, @Suspended final AsyncResponse response) {
 
-        ListenableFuture<Project> projectFuture = dao.addProjectAsync(project);
+        ListenableFuture<Project> projectFuture = this.dao.addProjectAsync(project);
         Futures.addCallback(projectFuture, new FutureCallback<Project>() {
             @Override
             public void onSuccess(Project addedProject) {

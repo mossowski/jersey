@@ -21,8 +21,8 @@ public class ProjectDao {
 
     public ProjectDao() {
 
-        projects = new ConcurrentHashMap<String, Project>();
-        service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+        this.projects = new ConcurrentHashMap<String, Project>();
+        this.service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ public class ProjectDao {
      * @return
      */
     public Collection<Project> getProjects() {
-        return projects.values();
+        return this.projects.values();
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ public class ProjectDao {
      */
     public ListenableFuture<Collection<Project>> getProjectsAsync() {
 
-        ListenableFuture<Collection<Project>> future = service
+        ListenableFuture<Collection<Project>> future = this.service
                 .submit(new Callable<Collection<Project>>() {
                     @Override
                     public Collection<Project> call() throws Exception {
@@ -62,7 +62,7 @@ public class ProjectDao {
      * @return
      */
     public Project getProject(String id) {
-        return projects.get(id);
+        return this.projects.get(id);
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ public class ProjectDao {
      */
     public ListenableFuture<Project> getProjectAsync(final String id) {
 
-        ListenableFuture<Project> future = service.submit(new Callable<Project>() {
+        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
             @Override
             public Project call() throws Exception {
                 return getProject(id);
@@ -94,7 +94,7 @@ public class ProjectDao {
     public Project addProject(Project project) {
 
         project.setId(UUID.randomUUID().toString());
-        projects.put(project.getId(), project);
+        this.projects.put(project.getId(), project);
 
         return project;
     }
@@ -103,7 +103,7 @@ public class ProjectDao {
 
     public ListenableFuture<Project> addProjectAsync(final Project project) {
 
-        ListenableFuture<Project> future = service.submit(new Callable<Project>() {
+        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
             @Override
             public Project call() throws Exception {
                 return addProject(project);

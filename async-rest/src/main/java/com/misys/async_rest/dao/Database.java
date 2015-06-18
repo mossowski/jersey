@@ -11,17 +11,17 @@ public class Database {
 
     public static final String              IP   = "localhost";
     public static final int                 PORT = 27017;
-    public static MongoClient               mongoClient;
-    public static MongoDatabase             mongoDatabase;
-    public static MongoCollection<Document> persons;
+    public        MongoClient               mongoClient;
+    public  	  MongoDatabase             mongoDatabase;
+    public 		  MongoCollection<Document> persons;
 
     public Database() {
 
         try {
 
-            mongoClient = new MongoClient(IP, PORT);
-            mongoDatabase = mongoClient.getDatabase("marcin");
-            persons = mongoDatabase.getCollection("persons");
+            this.mongoClient = new MongoClient(IP, PORT);
+            this.mongoDatabase = this.mongoClient.getDatabase("marcin");
+            this.persons = this.mongoDatabase.getCollection("persons");
 
             // System.out.println("Added " + persons.count() + " to database!");
 
@@ -33,7 +33,7 @@ public class Database {
 
     public void closeConnection() {
 
-        mongoClient.close();
+        this.mongoClient.close();
     }
 
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 
+
 import static com.mongodb.client.model.Filters.*;
 
 import java.util.concurrent.Executors;
@@ -18,6 +19,7 @@ import org.bson.Document;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.misys.async_rest.Main;
 import com.misys.async_rest.model.Person;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
@@ -30,7 +32,7 @@ public class PersonDao {
 
     public PersonDao() {
 
-        service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+        this.service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -43,7 +45,7 @@ public class PersonDao {
         
         Map<String, Person> persons = new ConcurrentHashMap<String, Person>();
         
-        for (Document cursor : Database.persons.find()) {
+        for (Document cursor : Main.database.persons.find()) {
             Person person = new Person();
             person.setId(cursor.get("id").toString());
             person.setName(cursor.get("name").toString());
@@ -61,7 +63,7 @@ public class PersonDao {
      */
     public ListenableFuture<Collection<Person>> getPersonsAsync() {
 
-        ListenableFuture<Collection<Person>> future = service
+        ListenableFuture<Collection<Person>> future = this.service
                 .submit(new Callable<Collection<Person>>() {
                     @Override
                     public Collection<Person> call() throws Exception {
@@ -81,7 +83,7 @@ public class PersonDao {
      */
     public Person getPerson(String id) {
 
-        Document document = Database.persons.find(eq("id", id)).first();
+        Document document = Main.database.persons.find(eq("id", id)).first();
         Person person = new Person();
         
         person.setId(document.get("id").toString());
@@ -104,7 +106,7 @@ public class PersonDao {
      */
     public ListenableFuture<Person> getPersonAsync(final String id) {
 
-        ListenableFuture<Person> future = service.submit(new Callable<Person>() {
+        ListenableFuture<Person> future = this.service.submit(new Callable<Person>() {
             @Override
             public Person call() throws Exception {
                 return getPerson(id);
@@ -129,7 +131,7 @@ public class PersonDao {
         document.put("id", person.getId());
         document.put("name", person.getName());
         
-        Database.persons.insertOne(document);
+        Main.database.persons.insertOne(document);
 
         return person;
     }
@@ -143,7 +145,7 @@ public class PersonDao {
      */
     public ListenableFuture<Person> addPersonAsync(final Person person) {
 
-        ListenableFuture<Person> future = service.submit(new Callable<Person>() {
+        ListenableFuture<Person> future = this.service.submit(new Callable<Person>() {
             @Override
             public Person call() throws Exception {
                 return addPerson(person);
@@ -169,7 +171,7 @@ public class PersonDao {
         changes.put("id", personId);
         changes.put("name", personName);
         
-        UpdateResult result = Database.persons.updateOne(eq("id", person.getId()), new Document("$set", new Document(changes)));
+        UpdateResult result = Main.database.persons.updateOne(eq("id", person.getId()), new Document("$set", new Document(changes)));
         
         System.out.println("\n------------- UPDATE PERSON WITH ID -------------");
         System.out.println(" id     : " + personId);
@@ -189,7 +191,7 @@ public class PersonDao {
      */
     public ListenableFuture<Person> updatePersonAsync(final Person person) {
 
-        ListenableFuture<Person> future = service.submit(new Callable<Person>() {
+        ListenableFuture<Person> future = this.service.submit(new Callable<Person>() {
             @Override
             public Person call() throws Exception {
                 return updatePerson(person);
@@ -209,7 +211,7 @@ public class PersonDao {
     public Person deletePerson(String id) {
 
         Person personToDelete = getPerson(id);
-        DeleteResult result = Database.persons.deleteOne(eq("id", id));
+        DeleteResult result = Main.database.persons.deleteOne(eq("id", id));
         
         System.out.println("\n------------- DELETE PERSON WITH ID -------------");
         System.out.println(" id       : " + id);
@@ -230,7 +232,7 @@ public class PersonDao {
      */
     public ListenableFuture<Person> deletePersonAsync(final String id) {
 
-        ListenableFuture<Person> future = service.submit(new Callable<Person>() {
+        ListenableFuture<Person> future = this.service.submit(new Callable<Person>() {
             @Override
             public Person call() throws Exception {
                 return deletePerson(id);

@@ -71,8 +71,8 @@ public class ProjectResourceTest extends JerseyTest {
     @Before
     public void setupProjects() {
 
-        project1_id = (String) toHashMap(addProject("Project 1")).get("id");
-        project2_id = (String) toHashMap(addProject("Project 2")).get("id");
+        this.project1_id = (String) toHashMap(addProject("Project 1")).get("id");
+        this.project2_id = (String) toHashMap(addProject("Project 2")).get("id");
     }
 
     @Test
@@ -89,7 +89,7 @@ public class ProjectResourceTest extends JerseyTest {
     @Test
     public void testGetProjectOne() {
 
-        HashMap<String, Object> response = toHashMap(target("projects").path(project1_id).request()
+        HashMap<String, Object> response = toHashMap(target("projects").path(this.project1_id).request()
                 .get());
         assertNotNull(response);
     }
@@ -97,7 +97,7 @@ public class ProjectResourceTest extends JerseyTest {
     @Test
     public void testGetProjectTwo() {
 
-        HashMap<String, Object> response = toHashMap(target("projects").path(project2_id).request()
+        HashMap<String, Object> response = toHashMap(target("projects").path(this.project2_id).request()
                 .get());
         assertNotNull(response);
     }

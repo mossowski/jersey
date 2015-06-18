@@ -34,7 +34,7 @@ public class ApplicationConfig extends ResourceConfig {
 
         register(json);
         // register(xml);
-        property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+        property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, new Boolean(true));
     }
 
 }

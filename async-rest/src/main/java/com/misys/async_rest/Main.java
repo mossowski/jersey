@@ -26,7 +26,9 @@ public class Main {
     public static final String WEB_ROOT = "/webroot/";
     public static final String APP_PATH = "/async-rest/";
     public static final int    PORT     = 8080;
-    public static final String IP       = "10.22.11.33";
+    //public static final String IP       = "10.22.11.33";
+    public static final String IP       = "localhost";
+    public static 		Database database;
 
     // ---------------------------------------------------------------------------------------------------
 
@@ -71,7 +73,7 @@ public class Main {
 
     public static String getAppUri() {
 
-        return String.format("%s:%s%s", IP, PORT, APP_PATH);
+        return IP + ":" + PORT + APP_PATH;
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -81,15 +83,13 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
 
-        final Database database = new Database();
+        database = new Database();
         final HttpServer server = startServer();
 
-        System.out.println(String.format(
-                                         "Application started.\n" + "Access it at %s\n" + "Hit enter to stop it...",
-                                         getAppUri()));
+        System.out.println("Application started.\n" + "Access it at %s\n" + "Hit enter to stop it..." + getAppUri());
         System.in.read();
 
-        // Database connection need to be fixed
+        // Database connection needs to be fixed
         database.closeConnection();
         server.shutdownNow();
     }

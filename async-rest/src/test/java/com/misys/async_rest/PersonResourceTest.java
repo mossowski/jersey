@@ -71,8 +71,8 @@ public class PersonResourceTest extends JerseyTest {
     @Before
     public void setupPersons() {
 
-        person1_id = (String) toHashMap(addPerson("Mietek")).get("id");
-        person2_id = (String) toHashMap(addPerson("Wiesiek")).get("id");
+        this.person1_id = (String) toHashMap(addPerson("Mietek")).get("id");
+        this.person2_id = (String) toHashMap(addPerson("Wiesiek")).get("id");
     }
 
     @Test
@@ -89,7 +89,7 @@ public class PersonResourceTest extends JerseyTest {
     @Test
     public void testGetPersonOne() {
 
-        HashMap<String, Object> response = toHashMap(target("persons").path(person1_id).request()
+        HashMap<String, Object> response = toHashMap(target("persons").path(this.person1_id).request()
                 .get());
         assertNotNull(response);
     }
@@ -97,7 +97,7 @@ public class PersonResourceTest extends JerseyTest {
     @Test
     public void testGetPersonTwo() {
 
-        HashMap<String, Object> response = toHashMap(target("persons").path(person2_id).request()
+        HashMap<String, Object> response = toHashMap(target("persons").path(this.person2_id).request()
                 .get());
         assertNotNull(response);
     }
