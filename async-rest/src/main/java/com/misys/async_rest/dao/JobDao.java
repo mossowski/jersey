@@ -15,17 +15,17 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.misys.async_rest.Main;
-import com.misys.async_rest.model.Project;
+import com.misys.async_rest.model.Job;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
-public class ProjectDao {
+public class JobDao {
 
 	private ListeningExecutorService service;
 
     // ---------------------------------------------------------------------------------------------------
 
-    public ProjectDao() {
+    public JobDao() {
 
         this.service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
     }
@@ -36,18 +36,18 @@ public class ProjectDao {
      * 
      * @return
      */
-    public Collection<Project> getProjects() {
+    public Collection<Job> getJobs() {
         
-        Map<String, Project> projects = new ConcurrentHashMap<String, Project>();
+        Map<String, Job> jobs = new ConcurrentHashMap<String, Job>();
         
-        for (Document cursor : Main.database.getProjects().find()) {
-            Project project = new Project();
-            project.setId(cursor.get("id").toString());
-            project.setName(cursor.get("name").toString());
-            projects.put(project.getId(), project);
+        for (Document cursor : Main.database.getJobs().find()) {
+            Job job = new Job();
+            job.setId(cursor.get("id").toString());
+            job.setName(cursor.get("name").toString());
+            jobs.put(job.getId(), job);
         }
         
-        return projects.values();
+        return jobs.values();
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -56,13 +56,13 @@ public class ProjectDao {
      * 
      * @return
      */
-    public ListenableFuture<Collection<Project>> getProjectsAsync() {
+    public ListenableFuture<Collection<Job>> getJobsAsync() {
 
-        ListenableFuture<Collection<Project>> future = this.service
-                .submit(new Callable<Collection<Project>>() {
+        ListenableFuture<Collection<Job>> future = this.service
+                .submit(new Callable<Collection<Job>>() {
                     @Override
-                    public Collection<Project> call() throws Exception {
-                        return getProjects();
+                    public Collection<Job> call() throws Exception {
+                        return getJobs();
                     }
                 });
 
@@ -76,20 +76,20 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public Project getProject(String id) {
+    public Job getJob(String id) {
 
-        Document document = Main.database.getProjects().find(eq("id", id)).first();
-        Project project = new Project();
+        Document document = Main.database.getJobs().find(eq("id", id)).first();
+        Job job = new Job();
         
-        project.setId(document.get("id").toString());
-        project.setName(document.get("name").toString());
+        job.setId(document.get("id").toString());
+        job.setName(document.get("name").toString());
         
-        System.out.println("\n------------- GET PROJECT WITH ID ----------------");
+        System.out.println("\n------------- GET JOB WITH ID ----------------");
         System.out.println(" id   : " + document.get("id"));
         System.out.println(" name : " + document.get("name"));
         System.out.println("-------------------------------------------------");       
         
-        return project;
+        return job;
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -99,12 +99,12 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public ListenableFuture<Project> getProjectAsync(final String id) {
+    public ListenableFuture<Job> getJobAsync(final String id) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Job> future = this.service.submit(new Callable<Job>() {
             @Override
-            public Project call() throws Exception {
-                return getProject(id);
+            public Job call() throws Exception {
+                return getJob(id);
             }
         });
 
@@ -115,35 +115,35 @@ public class ProjectDao {
 
     /**
      * 
-     * @param project
+     * @param job
      * @return
      */
-    public Project addProject(Project project) {
+    public Job addJob(Job job) {
 
-        project.setId(UUID.randomUUID().toString());
+        job.setId(UUID.randomUUID().toString());
         
         Document document = new Document();
-        document.put("id", project.getId());
-        document.put("name", project.getName());
+        document.put("id", job.getId());
+        document.put("name", job.getName());
         
-        Main.database.getProjects().insertOne(document);
+        Main.database.getJobs().insertOne(document);
 
-        return project;
+        return job;
     }
 
     // ---------------------------------------------------------------------------------------------------
 
     /**
      * 
-     * @param project
+     * @param job
      * @return
      */
-    public ListenableFuture<Project> addProjectAsync(final Project project) {
+    public ListenableFuture<Job> addJobAsync(final Job job) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Job> future = this.service.submit(new Callable<Job>() {
             @Override
-            public Project call() throws Exception {
-                return addProject(project);
+            public Job call() throws Exception {
+                return addJob(job);
             }
         });
 
@@ -154,42 +154,42 @@ public class ProjectDao {
 
     /**
      * 
-     * @param project
+     * @param job
      * @return
      */
-    public Project updateProject(Project project) {
+    public Job updateJob(Job job) {
 
-        String projectId = project.getId();
-        String projectName = project.getName();
+        String jobId = job.getId();
+        String jobName = job.getName();
         
         Map<String, Object> changes = new ConcurrentHashMap<String, Object>();
-        changes.put("id", projectId);
-        changes.put("name", projectName);
+        changes.put("id", jobId);
+        changes.put("name", jobName);
         
-        UpdateResult result = Main.database.getProjects().updateOne(eq("id", project.getId()), new Document("$set", new Document(changes)));
+        UpdateResult result = Main.database.getJobs().updateOne(eq("id", job.getId()), new Document("$set", new Document(changes)));
         
-        System.out.println("\n------------- UPDATE PROJECT WITH ID -------------");
-        System.out.println(" id     : " + projectId);
-        System.out.println(" name   : " + projectName);
+        System.out.println("\n------------- UPDATE JOB WITH ID -------------");
+        System.out.println(" id     : " + jobId);
+        System.out.println(" name   : " + jobName);
         System.out.println(" result :" + result);
         System.out.println("-------------------------------------------------");       
         
-        return project;
+        return job;
     }
     
     // ---------------------------------------------------------------------------------------------------
 
     /**
      * 
-     * @param project
+     * @param job
      * @return
      */
-    public ListenableFuture<Project> updateProjectAsync(final Project project) {
+    public ListenableFuture<Job> updateJobAsync(final Job job) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Job> future = this.service.submit(new Callable<Job>() {
             @Override
-            public Project call() throws Exception {
-                return updateProject(project);
+            public Job call() throws Exception {
+                return updateJob(job);
             }
         });
 
@@ -203,18 +203,18 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public Project deleteProject(String id) {
+    public Job deleteJob(String id) {
 
-        Project projectToDelete = getProject(id);
-        DeleteResult result = Main.database.getProjects().deleteOne(eq("id", id));
+        Job jobToDelete = getJob(id);
+        DeleteResult result = Main.database.getJobs().deleteOne(eq("id", id));
         
-        System.out.println("\n------------- DELETE PROJECT WITH ID -------------");
+        System.out.println("\n------------- DELETE JOB WITH ID -------------");
         System.out.println(" id       : " + id);
-        System.out.println(" name     : " + projectToDelete.getName());
+        System.out.println(" name     : " + jobToDelete.getName());
         System.out.println(" result   : " + result);
         System.out.println("-------------------------------------------------"); 
         
-        return projectToDelete;
+        return jobToDelete;
         
     }
 
@@ -225,12 +225,12 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public ListenableFuture<Project> deleteProjectAsync(final String id) {
+    public ListenableFuture<Job> deleteJobAsync(final String id) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Job> future = this.service.submit(new Callable<Job>() {
             @Override
-            public Project call() throws Exception {
-                return deleteProject(id);
+            public Job call() throws Exception {
+                return deleteJob(id);
             }
         });
 

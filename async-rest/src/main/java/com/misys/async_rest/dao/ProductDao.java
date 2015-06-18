@@ -15,17 +15,17 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.misys.async_rest.Main;
-import com.misys.async_rest.model.Project;
+import com.misys.async_rest.model.Product;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
-public class ProjectDao {
+public class ProductDao {
 
 	private ListeningExecutorService service;
 
     // ---------------------------------------------------------------------------------------------------
 
-    public ProjectDao() {
+    public ProductDao() {
 
         this.service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
     }
@@ -36,18 +36,18 @@ public class ProjectDao {
      * 
      * @return
      */
-    public Collection<Project> getProjects() {
+    public Collection<Product> getProducts() {
         
-        Map<String, Project> projects = new ConcurrentHashMap<String, Project>();
+        Map<String, Product> products = new ConcurrentHashMap<String, Product>();
         
-        for (Document cursor : Main.database.getProjects().find()) {
-            Project project = new Project();
-            project.setId(cursor.get("id").toString());
-            project.setName(cursor.get("name").toString());
-            projects.put(project.getId(), project);
+        for (Document cursor : Main.database.getProducts().find()) {
+            Product product = new Product();
+            product.setId(cursor.get("id").toString());
+            product.setName(cursor.get("name").toString());
+            products.put(product.getId(), product);
         }
         
-        return projects.values();
+        return products.values();
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -56,13 +56,13 @@ public class ProjectDao {
      * 
      * @return
      */
-    public ListenableFuture<Collection<Project>> getProjectsAsync() {
+    public ListenableFuture<Collection<Product>> getProductsAsync() {
 
-        ListenableFuture<Collection<Project>> future = this.service
-                .submit(new Callable<Collection<Project>>() {
+        ListenableFuture<Collection<Product>> future = this.service
+                .submit(new Callable<Collection<Product>>() {
                     @Override
-                    public Collection<Project> call() throws Exception {
-                        return getProjects();
+                    public Collection<Product> call() throws Exception {
+                        return getProducts();
                     }
                 });
 
@@ -76,20 +76,20 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public Project getProject(String id) {
+    public Product getProduct(String id) {
 
-        Document document = Main.database.getProjects().find(eq("id", id)).first();
-        Project project = new Project();
+        Document document = Main.database.getProducts().find(eq("id", id)).first();
+        Product product = new Product();
         
-        project.setId(document.get("id").toString());
-        project.setName(document.get("name").toString());
+        product.setId(document.get("id").toString());
+        product.setName(document.get("name").toString());
         
-        System.out.println("\n------------- GET PROJECT WITH ID ----------------");
+        System.out.println("\n------------- GET PRODUCT WITH ID ----------------");
         System.out.println(" id   : " + document.get("id"));
         System.out.println(" name : " + document.get("name"));
         System.out.println("-------------------------------------------------");       
         
-        return project;
+        return product;
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -99,12 +99,12 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public ListenableFuture<Project> getProjectAsync(final String id) {
+    public ListenableFuture<Product> getProductAsync(final String id) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Product> future = this.service.submit(new Callable<Product>() {
             @Override
-            public Project call() throws Exception {
-                return getProject(id);
+            public Product call() throws Exception {
+                return getProduct(id);
             }
         });
 
@@ -115,35 +115,35 @@ public class ProjectDao {
 
     /**
      * 
-     * @param project
+     * @param product
      * @return
      */
-    public Project addProject(Project project) {
+    public Product addProduct(Product product) {
 
-        project.setId(UUID.randomUUID().toString());
+        product.setId(UUID.randomUUID().toString());
         
         Document document = new Document();
-        document.put("id", project.getId());
-        document.put("name", project.getName());
+        document.put("id", product.getId());
+        document.put("name", product.getName());
         
-        Main.database.getProjects().insertOne(document);
+        Main.database.getProducts().insertOne(document);
 
-        return project;
+        return product;
     }
 
     // ---------------------------------------------------------------------------------------------------
 
     /**
      * 
-     * @param project
+     * @param product
      * @return
      */
-    public ListenableFuture<Project> addProjectAsync(final Project project) {
+    public ListenableFuture<Product> addProductAsync(final Product product) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Product> future = this.service.submit(new Callable<Product>() {
             @Override
-            public Project call() throws Exception {
-                return addProject(project);
+            public Product call() throws Exception {
+                return addProduct(product);
             }
         });
 
@@ -154,42 +154,42 @@ public class ProjectDao {
 
     /**
      * 
-     * @param project
+     * @param product
      * @return
      */
-    public Project updateProject(Project project) {
+    public Product updateProduct(Product product) {
 
-        String projectId = project.getId();
-        String projectName = project.getName();
+        String productId = product.getId();
+        String productName = product.getName();
         
         Map<String, Object> changes = new ConcurrentHashMap<String, Object>();
-        changes.put("id", projectId);
-        changes.put("name", projectName);
+        changes.put("id", productId);
+        changes.put("name", productName);
         
-        UpdateResult result = Main.database.getProjects().updateOne(eq("id", project.getId()), new Document("$set", new Document(changes)));
+        UpdateResult result = Main.database.getProducts().updateOne(eq("id", product.getId()), new Document("$set", new Document(changes)));
         
-        System.out.println("\n------------- UPDATE PROJECT WITH ID -------------");
-        System.out.println(" id     : " + projectId);
-        System.out.println(" name   : " + projectName);
+        System.out.println("\n------------- UPDATE PRODUCT WITH ID -------------");
+        System.out.println(" id     : " + productId);
+        System.out.println(" name   : " + productName);
         System.out.println(" result :" + result);
         System.out.println("-------------------------------------------------");       
         
-        return project;
+        return product;
     }
     
     // ---------------------------------------------------------------------------------------------------
 
     /**
      * 
-     * @param project
+     * @param product
      * @return
      */
-    public ListenableFuture<Project> updateProjectAsync(final Project project) {
+    public ListenableFuture<Product> updateProductAsync(final Product product) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Product> future = this.service.submit(new Callable<Product>() {
             @Override
-            public Project call() throws Exception {
-                return updateProject(project);
+            public Product call() throws Exception {
+                return updateProduct(product);
             }
         });
 
@@ -203,18 +203,18 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public Project deleteProject(String id) {
+    public Product deleteProduct(String id) {
 
-        Project projectToDelete = getProject(id);
-        DeleteResult result = Main.database.getProjects().deleteOne(eq("id", id));
+        Product productToDelete = getProduct(id);
+        DeleteResult result = Main.database.getProducts().deleteOne(eq("id", id));
         
-        System.out.println("\n------------- DELETE PROJECT WITH ID -------------");
+        System.out.println("\n------------- DELETE PRODUCT WITH ID -------------");
         System.out.println(" id       : " + id);
-        System.out.println(" name     : " + projectToDelete.getName());
+        System.out.println(" name     : " + productToDelete.getName());
         System.out.println(" result   : " + result);
         System.out.println("-------------------------------------------------"); 
         
-        return projectToDelete;
+        return productToDelete;
         
     }
 
@@ -225,12 +225,12 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public ListenableFuture<Project> deleteProjectAsync(final String id) {
+    public ListenableFuture<Product> deleteProductAsync(final String id) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Product> future = this.service.submit(new Callable<Product>() {
             @Override
-            public Project call() throws Exception {
-                return deleteProject(id);
+            public Product call() throws Exception {
+                return deleteProduct(id);
             }
         });
 

@@ -45,7 +45,7 @@ public class PersonDao {
         
         Map<String, Person> persons = new ConcurrentHashMap<String, Person>();
         
-        for (Document cursor : Main.database.persons.find()) {
+        for (Document cursor : Main.database.getPersons().find()) {
             Person person = new Person();
             person.setId(cursor.get("id").toString());
             person.setName(cursor.get("name").toString());
@@ -83,7 +83,7 @@ public class PersonDao {
      */
     public Person getPerson(String id) {
 
-        Document document = Main.database.persons.find(eq("id", id)).first();
+        Document document = Main.database.getPersons().find(eq("id", id)).first();
         Person person = new Person();
         
         person.setId(document.get("id").toString());
@@ -131,7 +131,7 @@ public class PersonDao {
         document.put("id", person.getId());
         document.put("name", person.getName());
         
-        Main.database.persons.insertOne(document);
+        Main.database.getPersons().insertOne(document);
 
         return person;
     }
@@ -171,7 +171,7 @@ public class PersonDao {
         changes.put("id", personId);
         changes.put("name", personName);
         
-        UpdateResult result = Main.database.persons.updateOne(eq("id", person.getId()), new Document("$set", new Document(changes)));
+        UpdateResult result = Main.database.getPersons().updateOne(eq("id", person.getId()), new Document("$set", new Document(changes)));
         
         System.out.println("\n------------- UPDATE PERSON WITH ID -------------");
         System.out.println(" id     : " + personId);
@@ -211,7 +211,7 @@ public class PersonDao {
     public Person deletePerson(String id) {
 
         Person personToDelete = getPerson(id);
-        DeleteResult result = Main.database.persons.deleteOne(eq("id", id));
+        DeleteResult result = Main.database.getPersons().deleteOne(eq("id", id));
         
         System.out.println("\n------------- DELETE PERSON WITH ID -------------");
         System.out.println(" id       : " + id);

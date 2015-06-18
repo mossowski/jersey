@@ -15,17 +15,17 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.misys.async_rest.Main;
-import com.misys.async_rest.model.Project;
+import com.misys.async_rest.model.Commit;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
-public class ProjectDao {
+public class CommitDao {
 
 	private ListeningExecutorService service;
 
     // ---------------------------------------------------------------------------------------------------
 
-    public ProjectDao() {
+    public CommitDao() {
 
         this.service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
     }
@@ -36,18 +36,18 @@ public class ProjectDao {
      * 
      * @return
      */
-    public Collection<Project> getProjects() {
+    public Collection<Commit> getCommits() {
         
-        Map<String, Project> projects = new ConcurrentHashMap<String, Project>();
+        Map<String, Commit> commits = new ConcurrentHashMap<String, Commit>();
         
-        for (Document cursor : Main.database.getProjects().find()) {
-            Project project = new Project();
-            project.setId(cursor.get("id").toString());
-            project.setName(cursor.get("name").toString());
-            projects.put(project.getId(), project);
+        for (Document cursor : Main.database.getCommits().find()) {
+            Commit commit = new Commit();
+            commit.setId(cursor.get("id").toString());
+            commit.setName(cursor.get("name").toString());
+            commits.put(commit.getId(), commit);
         }
         
-        return projects.values();
+        return commits.values();
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -56,13 +56,13 @@ public class ProjectDao {
      * 
      * @return
      */
-    public ListenableFuture<Collection<Project>> getProjectsAsync() {
+    public ListenableFuture<Collection<Commit>> getCommitsAsync() {
 
-        ListenableFuture<Collection<Project>> future = this.service
-                .submit(new Callable<Collection<Project>>() {
+        ListenableFuture<Collection<Commit>> future = this.service
+                .submit(new Callable<Collection<Commit>>() {
                     @Override
-                    public Collection<Project> call() throws Exception {
-                        return getProjects();
+                    public Collection<Commit> call() throws Exception {
+                        return getCommits();
                     }
                 });
 
@@ -76,20 +76,20 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public Project getProject(String id) {
+    public Commit getCommit(String id) {
 
-        Document document = Main.database.getProjects().find(eq("id", id)).first();
-        Project project = new Project();
+        Document document = Main.database.getCommits().find(eq("id", id)).first();
+        Commit commit = new Commit();
         
-        project.setId(document.get("id").toString());
-        project.setName(document.get("name").toString());
+        commit.setId(document.get("id").toString());
+        commit.setName(document.get("name").toString());
         
-        System.out.println("\n------------- GET PROJECT WITH ID ----------------");
+        System.out.println("\n------------- GET COMMIT WITH ID ----------------");
         System.out.println(" id   : " + document.get("id"));
         System.out.println(" name : " + document.get("name"));
         System.out.println("-------------------------------------------------");       
         
-        return project;
+        return commit;
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -99,12 +99,12 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public ListenableFuture<Project> getProjectAsync(final String id) {
+    public ListenableFuture<Commit> getCommitAsync(final String id) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Commit> future = this.service.submit(new Callable<Commit>() {
             @Override
-            public Project call() throws Exception {
-                return getProject(id);
+            public Commit call() throws Exception {
+                return getCommit(id);
             }
         });
 
@@ -115,35 +115,35 @@ public class ProjectDao {
 
     /**
      * 
-     * @param project
+     * @param commit
      * @return
      */
-    public Project addProject(Project project) {
+    public Commit addCommit(Commit commit) {
 
-        project.setId(UUID.randomUUID().toString());
+        commit.setId(UUID.randomUUID().toString());
         
         Document document = new Document();
-        document.put("id", project.getId());
-        document.put("name", project.getName());
+        document.put("id", commit.getId());
+        document.put("name", commit.getName());
         
-        Main.database.getProjects().insertOne(document);
+        Main.database.getCommits().insertOne(document);
 
-        return project;
+        return commit;
     }
 
     // ---------------------------------------------------------------------------------------------------
 
     /**
      * 
-     * @param project
+     * @param commit
      * @return
      */
-    public ListenableFuture<Project> addProjectAsync(final Project project) {
+    public ListenableFuture<Commit> addCommitAsync(final Commit commit) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Commit> future = this.service.submit(new Callable<Commit>() {
             @Override
-            public Project call() throws Exception {
-                return addProject(project);
+            public Commit call() throws Exception {
+                return addCommit(commit);
             }
         });
 
@@ -154,42 +154,42 @@ public class ProjectDao {
 
     /**
      * 
-     * @param project
+     * @param commit
      * @return
      */
-    public Project updateProject(Project project) {
+    public Commit updateCommit(Commit commit) {
 
-        String projectId = project.getId();
-        String projectName = project.getName();
+        String commitId = commit.getId();
+        String commitName = commit.getName();
         
         Map<String, Object> changes = new ConcurrentHashMap<String, Object>();
-        changes.put("id", projectId);
-        changes.put("name", projectName);
+        changes.put("id", commitId);
+        changes.put("name", commitName);
         
-        UpdateResult result = Main.database.getProjects().updateOne(eq("id", project.getId()), new Document("$set", new Document(changes)));
+        UpdateResult result = Main.database.getCommits().updateOne(eq("id", commit.getId()), new Document("$set", new Document(changes)));
         
-        System.out.println("\n------------- UPDATE PROJECT WITH ID -------------");
-        System.out.println(" id     : " + projectId);
-        System.out.println(" name   : " + projectName);
+        System.out.println("\n------------- UPDATE COMMIT WITH ID -------------");
+        System.out.println(" id     : " + commitId);
+        System.out.println(" name   : " + commitName);
         System.out.println(" result :" + result);
         System.out.println("-------------------------------------------------");       
         
-        return project;
+        return commit;
     }
     
     // ---------------------------------------------------------------------------------------------------
 
     /**
      * 
-     * @param project
+     * @param commit
      * @return
      */
-    public ListenableFuture<Project> updateProjectAsync(final Project project) {
+    public ListenableFuture<Commit> updateCommitAsync(final Commit commit) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Commit> future = this.service.submit(new Callable<Commit>() {
             @Override
-            public Project call() throws Exception {
-                return updateProject(project);
+            public Commit call() throws Exception {
+                return updateCommit(commit);
             }
         });
 
@@ -203,18 +203,18 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public Project deleteProject(String id) {
+    public Commit deleteCommit(String id) {
 
-        Project projectToDelete = getProject(id);
-        DeleteResult result = Main.database.getProjects().deleteOne(eq("id", id));
+        Commit commitToDelete = getCommit(id);
+        DeleteResult result = Main.database.getCommits().deleteOne(eq("id", id));
         
-        System.out.println("\n------------- DELETE PROJECT WITH ID -------------");
+        System.out.println("\n------------- DELETE COMMIT WITH ID -------------");
         System.out.println(" id       : " + id);
-        System.out.println(" name     : " + projectToDelete.getName());
+        System.out.println(" name     : " + commitToDelete.getName());
         System.out.println(" result   : " + result);
         System.out.println("-------------------------------------------------"); 
         
-        return projectToDelete;
+        return commitToDelete;
         
     }
 
@@ -225,12 +225,12 @@ public class ProjectDao {
      * @param id
      * @return
      */
-    public ListenableFuture<Project> deleteProjectAsync(final String id) {
+    public ListenableFuture<Commit> deleteCommitAsync(final String id) {
 
-        ListenableFuture<Project> future = this.service.submit(new Callable<Project>() {
+        ListenableFuture<Commit> future = this.service.submit(new Callable<Commit>() {
             @Override
-            public Project call() throws Exception {
-                return deleteProject(id);
+            public Commit call() throws Exception {
+                return deleteCommit(id);
             }
         });
 
